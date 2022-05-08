@@ -1,13 +1,13 @@
 part of 'views.dart';
 
-class ViewDataPeminjam extends StatefulWidget {
-  ViewDataPeminjam({Key key}) : super(key: key);
+class ViewDataPeminjaman extends StatefulWidget {
+  ViewDataPeminjaman({Key key}) : super(key: key);
 
   @override
-  State<ViewDataPeminjam> createState() => _ViewDataPeminjamState();
+  State<ViewDataPeminjaman> createState() => _ViewDataPeminjamanState();
 }
 
-class _ViewDataPeminjamState extends State<ViewDataPeminjam> {
+class _ViewDataPeminjamanState extends State<ViewDataPeminjaman> {
   List dataPeminjam = [];
 
   void getdatapeminjam() {
@@ -179,14 +179,9 @@ class _TambahKataPeninjamState extends State<TambahKataPeninjam> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      _pilihtanggal();
-                    },
-                    child: Text("Pilih Tanggal")),
-                ElevatedButton(
-                    onPressed: () {
                       tambahdatapeminjam();
                       Navigator.of(context).pop(MaterialPageRoute(builder: (_) {
-                        return ViewDataPeminjam();
+                        return ViewDataPeminjaman();
                       }));
                     },
                     child: Text("Submit")),

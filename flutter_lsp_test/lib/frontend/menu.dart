@@ -27,7 +27,7 @@ class _MenuPageState extends State<MenuPage> {
             style: ButtonStyle(alignment: Alignment.center),
               onPressed: () {
                 Navigator.push(context,
-              MaterialPageRoute(builder: (context) => ViewDataPeminjam()),);
+              MaterialPageRoute(builder: (context) => ViewDataPeminjaman()),);
               }, child: Text("Masuk sebagai admins", textAlign: TextAlign.center,))
         ]),
       ),
