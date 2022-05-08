@@ -30,7 +30,7 @@ class DPReadData{
   Future getdatapeminjam() async {
     try {
       http.Response hasildata = await http
-      .get(Uri.parse("https://lspperpus.000webhostapp.com/readdatapeminjamkoleksi.php"), headers: {"Accept": "application/json",});
+      .get(Uri.parse("https://lspperpus.000webhostapp.com/readdatapeminjamkoleksi.php"), headers: {"Accept": "application/json", "Access-Control_Allow_Origin": "*"});
       if (hasildata.statusCode == 200){
         print("data peminjam berhasil ditampilkan");
         final data = dpfromjson(hasildata.body);
@@ -47,11 +47,11 @@ class DPReadData{
   Future postdatapeminjam(body) async {
     try {
       http.Response hasildata = await http
-      .post(Uri.parse("https://lspperpus.000webhostapp.com/createdatapeminjam.php"), headers: {"Accept": "application/json",});
+      .post(Uri.parse("https://lspperpus.000webhostapp.com/createdatapeminjam.php"), body: body, headers: {"Accept": "application/json", "Access-Control_Allow_Origin": "*"});
       if (hasildata.statusCode == 200){
         print("data peminjam berhasil ditampilkan");
-        final data = dpfromjson(hasildata.body);
-        return data;
+        //final data = dpfromjson(hasildata.body);
+        return true;
       } else {
         print("error :" + hasildata.statusCode.toString());
         return null;

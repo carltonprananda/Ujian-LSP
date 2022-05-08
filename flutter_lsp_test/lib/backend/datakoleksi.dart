@@ -35,7 +35,7 @@ class DKolReadData{
   Future getdatakoleksi() async {
     try {
       http.Response hasildata = await http
-      .get(Uri.parse("https://lspperpus.000webhostapp.com/readkoleksikategori.php"), headers: {"Accept": "application/json",});
+      .get(Uri.parse("https://lspperpus.000webhostapp.com/readkoleksikategori.php"), headers: {"Accept": "application/json", "Access-Control_Allow_Origin": "*"});
       if (hasildata.statusCode == 200){
         print("data koleksi berhasil ditampilkan");
         final data = dpfromjson(hasildata.body);

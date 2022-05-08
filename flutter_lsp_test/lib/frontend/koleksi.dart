@@ -29,26 +29,31 @@ class _ViewDataKoleksiState extends State<ViewDataKoleksi> {
       appBar: AppBar(
         title: Text("Koleksi Buku Perpus"),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(5),
-        child: Container(
-            child: dataKoleksi == null
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: dataKoleksi.length,
-                    itemBuilder: (context, i) {
-                      return ListTile(
-                        title: Text(dataKoleksi[i]['judulbuku']),
-                        subtitle: Column(children: [
-                          Text(dataKoleksi[i]['descbuku']),
-                          Text(dataKoleksi[i]['penulisbuku']),
-                          Text(dataKoleksi[i]['penerbitbuku']),
-                          Text(dataKoleksi[i]['tahunbuku']),
-                          Text(dataKoleksi[i]['namakategori']),
-                        ]),
-                      );
-                    },
-                  )),
+      body: RefreshIndicator(
+        onRefresh: (){getdatakoleksi;},
+        child: Padding(
+          padding: EdgeInsets.all(5),
+          child: Container(
+              child: dataKoleksi == null
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemCount: dataKoleksi.length,
+                      itemBuilder: (context, i) {
+                        return ListTile(
+                          title: Text(dataKoleksi[i]['judulbuku']),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                            Text(dataKoleksi[i]['descbuku']),
+                            Text('Penulis Buku : ' + dataKoleksi[i]['penulisbuku']),
+                            Text('Penerbit Buku : ' + dataKoleksi[i]['penerbitbuku']),
+                            Text('Penerbit Buku : ' + dataKoleksi[i]['tahunbuku']),
+                            Text('Kategori : '  + dataKoleksi[i]['namakategori']),
+                          ]),
+                        );
+                      },
+                    )),
+        ),
       ),
     );
   }

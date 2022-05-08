@@ -18,6 +18,11 @@ class _ViewDataPeminjamState extends State<ViewDataPeminjam> {
     });
   }
 
+  void hapusdatapeminjam(int index) {
+    var url = "https://lspperpus.000webhostapp.com/deletedatapeminjam.php";
+    http.post(Uri.parse(url), body: {'userid': dataPeminjam[index]['userid']});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -34,26 +39,48 @@ class _ViewDataPeminjamState extends State<ViewDataPeminjam> {
         padding: EdgeInsets.all(5),
         child: Column(
           children: [
-            ElevatedButton(onPressed: null, child: Text("Tambah Peminjam")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TambahKataPeninjam()),
+                  );
+                },
+                child: Text("Tambah Peminjam")),
             SingleChildScrollView(
               child: Container(
-                  height: 200,
+                  height: MediaQuery.of(context).size.height * 0.5,
                   child: dataPeminjam == null
                       ? Center(child: CircularProgressIndicator())
                       : ListView.builder(
-                          itemCount: dataPeminjam.length,
-                          itemBuilder: (context, i) {
-                            return ListTile(
-                              title: Text(dataPeminjam[i]['namapeminjam']),
-                              subtitle: Column(children: [
-                                Text(dataPeminjam[i]['tanggalpeminjam']),
-                                Text(dataPeminjam[i]['judulbuku']),
-                                Text(dataPeminjam[i]['tanggalkembali']),
-                              ]),
-                            );
-                          },
+                            itemCount: dataPeminjam.length,
+                            itemBuilder: (context, i) {
+                              return ListTile(
+                                title: Text(dataPeminjam[i]['namapeminjam']),
+                                trailing: IconButton(
+                                  onPressed: () {
+                                    hapusdatapeminjam(i);
+                                  },
+                                  icon: Icon(Icons.delete),
+                                ),
+                                subtitle: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Tanggal Pinjam : " +
+                                          dataPeminjam[i]['tanggalpeminjam']),
+                                      Text("Buku : " +
+                                          dataPeminjam[i]['judulbuku']),
+                                      Text(
+                                        "Deadline Pengembalian Buku : " +
+                                            dataPeminjam[i]['tanggalkembali'],
+                                      ),
+                                    ]),
+                              );
+                            },
+                          ),
                         )),
-            ),
           ],
         ),
       ),
@@ -69,30 +96,46 @@ class TambahKataPeninjam extends StatefulWidget {
 }
 
 class _TambahKataPeninjamState extends State<TambahKataPeninjam> {
-  final picker = ImagePicker();
-  TextEditingController inputnama;
-  TextEditingController inputdeskripsi;
-  TextEditingController inputnomorbuku;
+  TextEditingController inputnama = new TextEditingController();
+  TextEditingController inputnomorbuku = new TextEditingController();
   TextEditingController tanggalpeminjaman;
   TextEditingController tanggalpengembalian;
 
-
   Future _pilihtanggal() async {
     DateTime pilih = await showDatePicker(
-        context: context,
-        initialDate: tanggalpinjam,
-        firstDate: new DateTime(2006),
-        lastDate: new DateTime(2025));
-    if (pilih != null) {
-      setState(() => tanggalpeminjaman = pilih as TextEditingController);
-    }
+            context: context,
+            initialDate: tanggalpinjam,
+            firstDate: DateTime(2006),
+            lastDate: DateTime(2025))
+        .then((value) {
+      setState(() {
+        tanggalpinjam = value;
+        deadlinepembalikan = value.add(Duration(days: 7));
+      });
+    });
+  }
+
+  void tambahdatapeminjam() {
+    DPCreateData dpCreateData = DPCreateData();
+    dpCreateData.namapeminjam = inputnama.text;
+    dpCreateData.nomorbuku = int.parse(inputnomorbuku.text);
+    dpCreateData.tanggalpinjam = formattanggal;
+    dpCreateData.tanggalkembali = formattanggal2;
+    print("test");
+    DPReadData()
+        .postdatapeminjam(dptojson(dpCreateData))
+        .then((value) => print('success'));
   }
 
   static DateTime tanggalpinjam = DateTime.now();
-  String formattanggal = DateFormat('yyyy-MM-dd - kk:mm:ss').format(tanggalpinjam);
+  String formattanggal = DateFormat('yyyy-MM-dd').format(tanggalpinjam);
   static DateTime deadlinepembalikan = tanggalpinjam.add(Duration(days: 7));
-  String formattanggal2 =
-      DateFormat('yyyy-MM-dd - kk:mm').format(deadlinepembalikan);
+  String formattanggal2 = DateFormat('yyyy-MM-dd').format(deadlinepembalikan);
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -112,16 +155,16 @@ class _TambahKataPeninjamState extends State<TambahKataPeninjam> {
               ),
             ),
             TextFormField(
-              controller: inputdeskripsi,
+              controller: inputnomorbuku,
               decoration: const InputDecoration(
                 border: UnderlineInputBorder(),
-                labelText: 'nomor buku',
+                labelText: 'Nomor buku',
               ),
             ),
             TextFormField(
               initialValue: formattanggal,
               onTap: () {
-                picker;
+                _pilihtanggal();
               },
               controller: tanggalpeminjaman,
               decoration: const InputDecoration(
@@ -129,17 +172,24 @@ class _TambahKataPeninjamState extends State<TambahKataPeninjam> {
                 labelText: 'Tanggal Peminjaman',
               ),
             ),
-            Text("Tanggal Pinjam" + tanggalpinjam.toString()),
-            Text("Batas Pengembalian Buku" + deadlinepembalikan.toString()),
+            Text("Tanggal Pinjam : " + formattanggal),
+            Text("Batas Pengembalian Buku: " + formattanggal2),
             ButtonBar(
+              alignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: (){
-                  String namapeminjam = inputnama.text;
-                  int nomorbuku = int.parse(inputnomorbuku.text);
-                  
-                }
-                
-                , child: Text("Submit")),
+                ElevatedButton(
+                    onPressed: () {
+                      _pilihtanggal();
+                    },
+                    child: Text("Pilih Tanggal")),
+                ElevatedButton(
+                    onPressed: () {
+                      tambahdatapeminjam();
+                      Navigator.of(context).pop(MaterialPageRoute(builder: (_) {
+                        return ViewDataPeminjam();
+                      }));
+                    },
+                    child: Text("Submit")),
               ],
             )
           ],

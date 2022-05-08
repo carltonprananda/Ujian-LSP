@@ -301,15 +301,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1+1"
-  sqflite_web:
-    dependency: "direct dev"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: a5e7fd3e2e4b05f52728221e41752a318532f4a8
-      url: "https://github.com/deakjahn/sqflite_web.git"
-    source: git
-    version: "2.0.0"
   stack_trace:
     dependency: transitive
     description:
